@@ -1,0 +1,1 @@
+@keyframes ta-pill-fill{0%{transform:translate(-9px)}to{transform:translate(0)}}[data-slot=tip-pill-fill][data-running]{animation-name:ta-pill-fill;animation-timing-function:linear;animation-fill-mode:both}@media (prefers-reduced-motion:reduce){[data-slot=tip-pill-fill][data-running]{animation:none;transform:translate(0)}}
