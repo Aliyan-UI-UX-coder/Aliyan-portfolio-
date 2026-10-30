@@ -1,7 +1,9 @@
-# 🌌 Aliyan - Frontend Developer & UI/UX Designer Portfolio
-### With Interactive 3D Video & Motion UI Engine
+# 🌌 Aliyan — Creative Portfolio & UI/UX Showcase
+> **🔗 Live Website Demo**: [https://aliyan-ui-ux-coder.github.io/Aliyan-portfolio-/](https://aliyan-ui-ux-coder.github.io/Aliyan-portfolio-/)  
+> **💬 Direct WhatsApp**: [+92 314 3215619](https://wa.me/923143215619)  
+> **🤖 Dedicated AI Agent**: Interactive Aliyan AI Assistant trained to answer questions about projects, stack, and design process.
 
-A cutting-edge, high-performance portfolio engineered for **Aliyan**, showcasing modern frontend engineering, award-winning UI/UX design systems, interactive 3D WebGL motion, and a custom 3D video showreel cinema.
+A cutting-edge, high-performance portfolio engineered for **Aliyan**, showcasing modern frontend engineering, award-winning UI/UX design systems, interactive 3D WebGL motion, and a custom trained AI assistant.
 
 ---
 
