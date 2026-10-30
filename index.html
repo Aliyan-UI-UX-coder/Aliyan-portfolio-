@@ -58,6 +58,61 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Ambient Canvas & Atmosphere Background */
+    #ambient-particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-cyber-grid {
+      position: fixed;
+      inset: 0;
+      background-size: 55px 55px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+      mask-image: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.85) 0%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.85) 0%, transparent 80%);
+    }
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+    }
+    .ambient-orb.orb-1 {
+      top: 15%;
+      right: 12%;
+      width: clamp(280px, 40vw, 550px);
+      height: clamp(280px, 40vw, 550px);
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.22) 0%, rgba(136, 0, 26, 0.08) 50%, transparent 70%);
+      animation: orbFloat1 18s ease-in-out infinite alternate;
+    }
+    .ambient-orb.orb-2 {
+      bottom: 15%;
+      left: 8%;
+      width: clamp(260px, 35vw, 500px);
+      height: clamp(260px, 35vw, 500px);
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.16) 0%, rgba(138, 43, 226, 0.06) 50%, transparent 70%);
+      animation: orbFloat2 22s ease-in-out infinite alternate;
+    }
+    @keyframes orbFloat1 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-40px, 50px) scale(1.12); }
+      100% { transform: translate(30px, -40px) scale(0.95); }
+    }
+    @keyframes orbFloat2 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, -40px) scale(1.15); }
+      100% { transform: translate(-30px, 30px) scale(0.9); }
+    }
+
     /* Custom Cursor */
     .custom-cursor {
       width: 22px;
@@ -67,8 +122,9 @@
       position: fixed;
       pointer-events: none;
       transform: translate(-50%, -50%);
-      transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+      transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s, opacity 0.3s;
       z-index: 999999;
+      opacity: 0;
       display: none;
     }
     .custom-cursor-dot {
@@ -80,6 +136,8 @@
       pointer-events: none;
       transform: translate(-50%, -50%);
       z-index: 1000000;
+      opacity: 0;
+      transition: opacity 0.3s;
       display: none;
     }
     @media (hover: hover) and (pointer: fine) {
@@ -179,29 +237,7 @@
       align-items: center;
       gap: 1.2rem;
     }
-    .btn-talk {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.65rem 1.4rem;
-      border-radius: 9999px;
-      background: #ffffff;
-      color: #08080c;
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: var(--transition);
-      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
-    }
-    .btn-talk:hover {
-      background: var(--crimson-bright);
-      color: #fff;
-      box-shadow: 0 8px 30px rgba(255, 42, 85, 0.4);
-      transform: translateY(-2px);
-    }
+
     .menu-btn {
       width: 44px;
       height: 44px;
@@ -295,6 +331,7 @@
       border-radius: 28px;
       overflow: visible;
       margin-bottom: 2rem;
+      transition: transform 0.4s var(--ease-out-expo);
     }
 
     .hero-portrait-card {
@@ -311,7 +348,7 @@
       justify-content: center;
     }
 
-    /* Artistic silhouette vector */
+    /* Artistic silhouette vector & Hero Photo */
     .portrait-avatar-art {
       width: 100%;
       height: 100%;
@@ -319,15 +356,74 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       position: relative;
+      overflow: hidden;
     }
     .portrait-avatar-art .avatar-monogram {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-family: var(--font-display);
-      font-size: 9rem;
+      font-size: clamp(8rem, 18vw, 12rem);
       font-weight: 900;
-      color: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.09);
       line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+    }
+    .hero-person-img {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      max-width: 95%;
+      height: 94%;
+      object-fit: contain;
+      object-position: bottom center;
+      z-index: 2;
+      filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+      user-select: none;
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+    .hero-portrait-wrap:hover .hero-person-img {
+      transform: translateX(-50%) scale(1.04);
+    }
+    .hero-card-badge {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.35rem 0.95rem;
+      border-radius: 9999px;
+      background: rgba(8, 8, 12, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #ffffff;
+      white-space: nowrap;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+      user-select: none;
+      pointer-events: none;
+    }
+    .hero-card-badge .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--crimson-bright);
+      box-shadow: 0 0 8px var(--crimson-bright);
     }
 
     /* Stylized Stickers from Video */
@@ -787,18 +883,25 @@
       position: relative;
       user-select: none;
       pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding: 0 1rem;
     }
     .giant-name-text {
       font-family: var(--font-display);
-      font-size: clamp(7rem, 26vw, 25rem);
+      font-size: clamp(3.2rem, 15vw, 14.5rem);
       font-weight: 900;
       color: #ffffff;
       line-height: 0.85;
-      letter-spacing: -0.06em;
+      letter-spacing: -0.03em;
       text-transform: uppercase;
-      opacity: 0.95;
-      margin-bottom: -0.1em;
-      filter: drop-shadow(0 -15px 30px rgba(0, 0, 0, 0.4));
+      opacity: 0.96;
+      margin-bottom: -0.04em;
+      text-align: center;
+      white-space: nowrap;
+      max-width: 100%;
+      filter: drop-shadow(0 -15px 35px rgba(0, 0, 0, 0.5));
     }
 
     .outro-strip {
@@ -889,42 +992,659 @@
       font-weight: 700;
     }
 
+    .floating-wa-btn,
     .floating-wa-pill {
       position: fixed;
       bottom: 24px;
       right: 24px;
+      width: 52px;
+      height: 52px;
       background: #25d366;
       color: #fff;
-      padding: 0.8rem 1.4rem;
-      border-radius: 9999px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      justify-content: center;
       text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+      box-shadow: 0 10px 30px rgba(37, 211, 102, 0.45), 0 0 20px rgba(37, 211, 102, 0.25);
       z-index: 999;
       transition: var(--transition);
     }
+    .floating-wa-btn:hover,
     .floating-wa-pill:hover {
-      transform: scale(1.08);
-      box-shadow: 0 12px 35px rgba(37, 211, 102, 0.6);
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 14px 35px rgba(37, 211, 102, 0.65), 0 0 30px rgba(37, 211, 102, 0.4);
+    }
+    .floating-wa-btn svg,
+    .floating-wa-pill svg {
+      width: 25px;
+      height: 25px;
+      stroke: #fff;
     }
 
+    /* ==========================================================================
+       Aliyan AI Agent Assistant Floating Widget & Chat Drawer
+       ========================================================================== */
+    .floating-ai-trigger {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: rgba(14, 15, 23, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(225, 29, 72, 0.45);
+      color: #fff;
+      padding: 0.55rem 1.15rem 0.55rem 0.65rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      z-index: 998;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(225, 29, 72, 0.3);
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .floating-ai-trigger:hover {
+      transform: translateY(-3px) scale(1.04);
+      border-color: var(--crimson-bright);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7), 0 0 35px rgba(255, 42, 85, 0.5);
+    }
+    .ai-avatar-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      position: relative;
+      background: radial-gradient(circle, #ff2a55 0%, #4c0519 100%);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      flex-shrink: 0;
+    }
+    .ai-avatar-thumb img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .ai-status-pulse {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      background: #10b981;
+      border: 2px solid #08080c;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.75; }
+    }
+    .ai-trigger-label {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .ai-label-title {
+      font-weight: 700;
+      font-size: 0.86rem;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .ai-label-sub {
+      font-size: 0.68rem;
+      color: var(--crimson-bright);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* AI Chat Window Modal */
+    .ai-chat-window {
+      position: fixed;
+      bottom: 85px;
+      left: 24px;
+      width: 390px;
+      max-width: calc(100vw - 36px);
+      height: 560px;
+      max-height: calc(100vh - 110px);
+      background: rgba(14, 15, 23, 0.95);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(225, 29, 72, 0.3);
+      display: flex;
+      flex-direction: column;
+      z-index: 10000;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px) scale(0.96);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ai-chat-window.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    .ai-chat-header {
+      padding: 1rem 1.2rem;
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.25) 0%, rgba(14, 15, 23, 0.8) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ai-chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .ai-header-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      color: #fff;
+    }
+    .ai-header-status {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .ai-chat-close-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.2rem;
+      opacity: 0.7;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .ai-chat-close-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* Quick Suggestion Chips */
+    .ai-quick-chips {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      background: rgba(8, 8, 12, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+    }
+    .ai-quick-chips::-webkit-scrollbar {
+      display: none;
+    }
+    .ai-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .ai-chip:hover {
+      background: var(--crimson-bright);
+      border-color: var(--crimson-bright);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Chat Body */
+    .ai-chat-body {
+      flex: 1;
+      padding: 1.2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
+    .ai-chat-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .ai-chat-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .ai-chat-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .ai-msg {
+      max-width: 88%;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      animation: msgPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      word-wrap: break-word;
+    }
+    @keyframes msgPop {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ai-msg-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #e11d48, #ff2a55);
+      color: #fff;
+      border-radius: 18px 18px 4px 18px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
+    }
+    .ai-msg-bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f1f5f9;
+      border-radius: 18px 18px 18px 4px;
+      padding: 0.85rem 1rem;
+    }
+    .ai-msg-bot p {
+      margin-bottom: 0.5rem;
+    }
+    .ai-msg-bot p:last-child {
+      margin-bottom: 0;
+    }
+    .ai-msg-bot ul {
+      margin: 0.4rem 0 0.5rem 1.2rem;
+      font-size: 0.84rem;
+    }
+    .ai-msg-bot li {
+      margin-bottom: 0.25rem;
+    }
+    .ai-msg-bot strong {
+      color: #fff;
+    }
+    .ai-cta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.65rem;
+      padding: 0.45rem 0.9rem;
+      background: #25d366;
+      color: #fff;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.78rem;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+      transition: var(--transition);
+    }
+    .ai-cta-pill:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+    }
+
+    /* Typing Dots Animation */
+    .ai-typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.6rem 0.9rem;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      align-self: flex-start;
+      width: fit-content;
+    }
+    .ai-typing-indicator span {
+      width: 6px;
+      height: 6px;
+      background: var(--crimson-bright);
+      border-radius: 50%;
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+    .ai-typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .ai-typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Chat Footer Form */
+    .ai-chat-footer {
+      padding: 0.85rem 1rem;
+      background: rgba(8, 8, 12, 0.85);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .ai-input-field {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+      padding: 0.65rem 1rem;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .ai-input-field:focus {
+      border-color: var(--crimson-bright);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 15px rgba(225, 29, 72, 0.25);
+    }
+    .ai-send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--crimson-bright);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .ai-send-btn:hover {
+      transform: scale(1.08);
+      background: #ff2a55;
+      box-shadow: 0 0 15px rgba(255, 42, 85, 0.5);
+    }
+
+    /* ==========================================================================
+       Responsive & Smooth Mobile Optimizations
+       ========================================================================== */
     @media (max-width: 900px) {
       .ribbon-grid {
         grid-template-columns: 1fr;
         gap: 3rem;
       }
       .sticker-badge {
-        padding: 0.4rem 0.8rem;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.74rem;
+      }
+      .role-item {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 1.25rem;
+      }
+      .site-header {
+        padding: 1.1rem 0;
+      }
+      .site-header.scrolled {
+        padding: 0.8rem 0;
+      }
+      .brand-title {
+        font-size: 1.35rem;
+      }
+
+      .menu-btn {
+        width: 38px;
+        height: 38px;
+      }
+      .menu-btn span {
+        width: 16px;
+      }
+
+      .hero-section {
+        padding: 6.2rem 0 3rem 0;
+        min-height: auto;
+      }
+      .hero-portrait-wrap {
+        width: clamp(230px, 75vw, 300px);
+        height: clamp(310px, 100vw, 420px);
+        margin-bottom: 1.5rem;
+      }
+      /* Prevent stickers from overflowing offscreen on mobile */
+      .sticker-badge {
+        padding: 0.4rem 0.75rem;
         font-size: 0.72rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+      }
+      .sticker-shield {
+        top: -8px;
+        left: -4px;
+        transform: rotate(-5deg);
+      }
+      .sticker-uiux {
+        top: 28%;
+        right: -6px;
+        transform: rotate(7deg);
+      }
+      .sticker-3d {
+        bottom: 18px;
+        left: -4px;
+        transform: rotate(-6deg);
+      }
+      .sticker-heart {
+        bottom: -8px;
+        right: 6px;
+        transform: rotate(3deg);
+      }
+      .hero-card-badge {
+        bottom: 12px;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+      }
+      .hero-meta-title {
+        font-size: clamp(1.8rem, 8vw, 2.6rem);
+      }
+      .hero-meta-sub {
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+      }
+
+      .journey-section {
+        padding: 3.5rem 0;
+      }
+      .journey-title {
+        font-size: clamp(1.7rem, 7.5vw, 2.8rem);
+      }
+      .journey-title span.highlight-box {
+        padding: 0.05rem 0.5rem;
+        margin: 0.2rem 0.15rem;
+      }
+
+      .slogan-section {
+        padding: 3rem 0;
+      }
+      .slogan-text {
+        font-size: clamp(1.35rem, 6vw, 2.2rem);
+        line-height: 1.25;
+      }
+
+      .ribbon-roles-section {
+        padding: 3.5rem 0;
+        min-height: auto;
+      }
+      .roles-list {
+        gap: 1rem;
+      }
+      .role-item {
+        font-size: clamp(1.3rem, 6.2vw, 2rem);
+        gap: 0.6rem;
+      }
+      .role-item:hover, .role-item.active {
+        transform: translateX(8px);
+      }
+      .floating-quote-box {
+        padding: 1.5rem 1.25rem;
+        border-radius: 16px;
+      }
+      .floating-quote-box h4 {
+        font-size: 1.2rem;
+      }
+
+      .featured-section {
+        padding: 3.5rem 0;
+      }
+      .section-header {
+        margin-bottom: 2.5rem;
+      }
+      .section-title {
+        font-size: clamp(2rem, 7vw, 3rem);
+      }
+      .works-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .work-thumb {
+        height: 200px;
+      }
+      .work-body {
+        padding: 1.4rem;
+      }
+      .work-body h3 {
+        font-size: 1.3rem;
+      }
+
+      .impact-section {
+        padding: 4.5rem 0 0 0;
+      }
+      .impact-title {
+        font-size: clamp(1.8rem, 8vw, 3.2rem);
+      }
+      .impact-sub {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+      }
+      .impact-cta-btns {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 3rem;
+        width: 100%;
+      }
+      .btn-impact-main, .btn-impact-secondary {
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
+        padding: 0.85rem 1.4rem;
+        font-size: 0.92rem;
+      }
+      .giant-name-banner {
+        padding: 0 0.5rem;
+      }
+      .giant-name-text {
+        font-size: clamp(2.4rem, 15vw, 5rem);
+        letter-spacing: -0.02em;
+        line-height: 0.9;
+      }
+
+      .outro-strip {
+        padding: 2.5rem 0;
+      }
+      .outro-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.2rem;
+      }
+      .outro-links {
+        justify-content: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+      }
+
+      .floating-ai-trigger {
+        bottom: 16px;
+        left: 12px;
+        padding: 0.45rem 0.85rem 0.45rem 0.45rem;
+        gap: 0.5rem;
+      }
+      .ai-avatar-thumb {
+        width: 34px;
+        height: 34px;
+      }
+      .ai-trigger-label .ai-label-title {
+        font-size: 0.76rem;
+      }
+      .ai-trigger-label .ai-label-sub {
+        display: none;
+      }
+
+      .floating-wa-btn,
+      .floating-wa-pill {
+        bottom: 16px;
+        right: 14px;
+        width: 48px;
+        height: 48px;
+        padding: 0;
+      }
+      .floating-wa-btn svg,
+      .floating-wa-pill svg {
+        width: 23px;
+        height: 23px;
+      }
+
+      .ai-chat-window {
+        bottom: 74px;
+        left: 8px;
+        right: 8px;
+        width: auto;
+        max-width: calc(100vw - 16px);
+        height: 480px;
+        max-height: calc(100vh - 90px);
+        border-radius: 20px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .floating-wa-btn,
+      .floating-wa-pill {
+        width: 42px;
+        height: 42px;
+        bottom: 14px;
+        right: 10px;
+      }
+      .floating-wa-btn svg,
+      .floating-wa-pill svg {
+        width: 20px;
+        height: 20px;
+      }
+      .floating-ai-trigger .ai-trigger-label {
+        display: none;
+      }
+      .floating-ai-trigger {
+        width: 42px;
+        height: 42px;
+        bottom: 14px;
+        left: 10px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+      }
+        border-radius: 50%;
+      }
+      .giant-name-text {
+        font-size: clamp(2rem, 14vw, 3.2rem);
       }
     }
   </style>
 </head>
 <body>
+
+  <!-- Ambient Animated Background Particles & Atmosphere -->
+  <canvas id="ambient-particles-canvas"></canvas>
+  <div class="ambient-cyber-grid"></div>
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
 
   <!-- Custom Cursor -->
   <div class="custom-cursor"></div>
@@ -943,14 +1663,6 @@
       </a>
 
       <div class="header-actions">
-        <a href="https://wa.me/923143215619?text=Hi%20Aliyan%2C%20let%27s%20discuss%20a%20project!" target="_blank" rel="noopener noreferrer" class="btn-talk">
-          <span>Let's Talk</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="7" y1="17" x2="17" y2="7"></line>
-            <polyline points="7 7 17 7 17 17"></polyline>
-          </svg>
-        </a>
-
         <button class="menu-btn" id="open-drawer-btn" title="Open Menu" aria-label="Open Navigation">
           <span></span>
           <span></span>
@@ -969,8 +1681,10 @@
           <div class="hero-portrait-card">
             <div class="portrait-avatar-art">
               <span class="avatar-monogram">A</span>
-              <div style="position: absolute; bottom: 20px; font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.1em; color: #fff; font-weight: 700;">
-                ALIYAN // 2026
+              <img src="./aliyan-hero.png" alt="Aliyan - Frontend Developer &amp; UI/UX Designer" class="hero-person-img" loading="eager">
+              <div class="hero-card-badge">
+                <span class="badge-dot"></span>
+                <span>ALIYAN // 2026</span>
               </div>
             </div>
           </div>
@@ -1189,9 +1903,59 @@
     </div>
   </div>
 
-  <a href="https://wa.me/923143215619?text=Hi%20Aliyan%2C%20I%20saw%20your%20portfolio!" target="_blank" rel="noopener noreferrer" class="floating-wa-pill">
-    <span>WhatsApp (0314)</span>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+  <!-- Aliyan AI Assistant Floating Trigger -->
+  <button class="floating-ai-trigger" id="ai-agent-trigger" aria-label="Open Aliyan AI Assistant">
+    <div class="ai-avatar-thumb">
+      <img src="./aliyan-hero.png" alt="Aliyan AI">
+      <span class="ai-status-pulse"></span>
+    </div>
+    <div class="ai-trigger-label">
+      <span class="ai-label-title">Ask Aliyan AI <span>✨</span></span>
+      <span class="ai-label-sub">Trained Assistant</span>
+    </div>
+  </button>
+
+  <!-- Aliyan AI Assistant Interactive Chat Drawer Modal -->
+  <div class="ai-chat-window" id="ai-chat-window" aria-hidden="true">
+    <div class="ai-chat-header">
+      <div class="ai-chat-header-info">
+        <div class="ai-avatar-thumb">
+          <img src="./aliyan-hero.png" alt="Aliyan AI">
+          <span class="ai-status-pulse"></span>
+        </div>
+        <div>
+          <div class="ai-header-name">Aliyan AI Assistant</div>
+          <div class="ai-header-status">Trained on Aliyan's Skills &amp; Projects</div>
+        </div>
+      </div>
+      <button class="ai-chat-close-btn" id="ai-chat-close-btn" aria-label="Close Chat">&times;</button>
+    </div>
+
+    <div class="ai-quick-chips" id="ai-quick-chips">
+      <button type="button" class="ai-chip" data-query="Who is Aliyan?">👋 Who is Aliyan?</button>
+      <button type="button" class="ai-chip" data-query="What are your core skills?">⚡ Skills &amp; Stack</button>
+      <button type="button" class="ai-chip" data-query="Show me your projects">🚀 Projects</button>
+      <button type="button" class="ai-chip" data-query="What is your UI/UX process?">🎨 UI/UX Process</button>
+      <button type="button" class="ai-chip" data-query="How can I hire Aliyan?">💼 Hire Aliyan</button>
+      <button type="button" class="ai-chip" data-query="What is your WhatsApp number?">📱 WhatsApp</button>
+    </div>
+
+    <div class="ai-chat-body" id="ai-chat-body"></div>
+
+    <form class="ai-chat-footer" id="ai-chat-form">
+      <input type="text" id="ai-user-input" class="ai-input-field" placeholder="Poochhein Aliyan ke kaam ke baray mein..." autocomplete="off">
+      <button type="submit" class="ai-send-btn" id="ai-send-btn" aria-label="Send message">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Floating Circular WhatsApp FAB (Icon Only) -->
+  <a href="https://wa.me/923143215619?text=Hi%20Aliyan%2C%20I%20saw%20your%20portfolio!" target="_blank" rel="noopener noreferrer" class="floating-wa-btn" title="Chat on WhatsApp (+92 314 3215619)" aria-label="Chat on WhatsApp">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
     </svg>
   </a>
@@ -1201,19 +1965,34 @@
       'use strict';
 
       // 1. Remove Preloader
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const preloader = document.getElementById('preloader');
-          if (preloader) preloader.classList.add('loaded');
-        }, 800);
-      });
+      const preloader = document.getElementById('preloader');
+      function hidePreloader() {
+        if (preloader && !preloader.classList.contains('loaded')) {
+          preloader.classList.add('loaded');
+        }
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(hidePreloader, 400);
+      } else {
+        window.addEventListener('load', () => {
+          setTimeout(hidePreloader, 800);
+        });
+      }
+      setTimeout(hidePreloader, 2000); // Safety fallback so preloader never hangs
 
       // 2. Custom Magnetic Cursor
       const cursor = document.querySelector('.custom-cursor');
       const dot = document.querySelector('.custom-cursor-dot');
       let mouseX = 0, mouseY = 0, curX = 0, curY = 0;
 
+      let cursorVisible = false;
       window.addEventListener('mousemove', (e) => {
+        if (!cursorVisible) {
+          cursorVisible = true;
+          if (cursor) cursor.style.opacity = '1';
+          if (dot) dot.style.opacity = '1';
+        }
         mouseX = e.clientX;
         mouseY = e.clientY;
         if (dot) {
@@ -1346,17 +2125,20 @@
       const quoteHeadline = document.getElementById('quote-headline');
       const quoteBody = document.getElementById('quote-body');
 
+      function selectRole(item) {
+        roleItems.forEach((r) => r.classList.remove('active'));
+        item.classList.add('active');
+
+        const roleName = item.querySelector('span:nth-child(2)').textContent;
+        const roleDesc = item.getAttribute('data-desc');
+
+        if (quoteHeadline) quoteHeadline.textContent = `Specialized in ${roleName}`;
+        if (quoteBody) quoteBody.textContent = roleDesc;
+      }
+
       roleItems.forEach((item) => {
-        item.addEventListener('mouseenter', () => {
-          roleItems.forEach((r) => r.classList.remove('active'));
-          item.classList.add('active');
-
-          const roleName = item.querySelector('span:nth-child(2)').textContent;
-          const roleDesc = item.getAttribute('data-desc');
-
-          if (quoteHeadline) quoteHeadline.textContent = `Specialized in ${roleName}`;
-          if (quoteBody) quoteBody.textContent = roleDesc;
-        });
+        item.addEventListener('mouseenter', () => selectRole(item));
+        item.addEventListener('click', () => selectRole(item));
       });
 
       // 7. Fullscreen Navigation Drawer
@@ -1373,6 +2155,330 @@
       }
       drawerLinks.forEach((link) => {
         link.addEventListener('click', () => drawer?.classList.remove('open'));
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer) drawer.classList.remove('open');
+      });
+      if (drawer) {
+        drawer.addEventListener('click', (e) => {
+          if (e.target === drawer) drawer.classList.remove('open');
+        });
+      }
+
+      // =======================================================================
+      // 8. Ambient Particle & Nebula Motion Canvas (Whole Screen Background)
+      // =======================================================================
+      const ambientCanvas = document.getElementById('ambient-particles-canvas');
+      if (ambientCanvas) {
+        const aCtx = ambientCanvas.getContext('2d');
+        let aWidth, aHeight;
+
+        function resizeAmbient() {
+          aWidth = ambientCanvas.width = window.innerWidth;
+          aHeight = ambientCanvas.height = window.innerHeight;
+        }
+        resizeAmbient();
+        window.addEventListener('resize', resizeAmbient);
+
+        const PARTICLE_COUNT = Math.min(65, Math.floor(window.innerWidth / 22));
+        const particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random() * (aWidth || window.innerWidth),
+            y: Math.random() * (aHeight || window.innerHeight),
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: -0.25 - Math.random() * 0.45,
+            radius: Math.random() * 1.8 + 0.6,
+            baseAlpha: Math.random() * 0.45 + 0.15,
+            phase: Math.random() * Math.PI * 2,
+            hue: Math.random() > 0.6 ? 345 : (Math.random() > 0.5 ? 215 : 185) // Crimson, Blue, Cyan
+          });
+        }
+
+        let ambientTime = 0;
+        function renderAmbient() {
+          ambientTime += 0.015;
+          aCtx.clearRect(0, 0, aWidth, aHeight);
+
+          // Draw floating glowing cosmic particles
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.x += p.vx + Math.sin(ambientTime + p.phase) * 0.25;
+            p.y += p.vy;
+
+            // Wrap around screen
+            if (p.y < -10) {
+              p.y = aHeight + 10;
+              p.x = Math.random() * aWidth;
+            }
+            if (p.x < -10) p.x = aWidth + 10;
+            if (p.x > aWidth + 10) p.x = -10;
+
+            const currentAlpha = p.baseAlpha * (0.6 + 0.4 * Math.sin(ambientTime * 2 + p.phase));
+
+            aCtx.beginPath();
+            aCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            if (p.hue === 345) {
+              aCtx.fillStyle = `rgba(255, 42, 85, ${currentAlpha})`;
+            } else if (p.hue === 215) {
+              aCtx.fillStyle = `rgba(59, 130, 246, ${currentAlpha})`;
+            } else {
+              aCtx.fillStyle = `rgba(0, 242, 254, ${currentAlpha})`;
+            }
+            aCtx.fill();
+
+            // Connect nearby particles with subtle cyber threads
+            for (let j = i + 1; j < particles.length; j++) {
+              const p2 = particles[j];
+              const dx = p.x - p2.x;
+              const dy = p.y - p2.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 85) {
+                const lineAlpha = (1 - dist / 85) * 0.09;
+                aCtx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
+                aCtx.lineWidth = 0.6;
+                aCtx.beginPath();
+                aCtx.moveTo(p.x, p.y);
+                aCtx.lineTo(p2.x, p2.y);
+                aCtx.stroke();
+              }
+            }
+          }
+
+          requestAnimationFrame(renderAmbient);
+        }
+        renderAmbient();
+      }
+
+      // =======================================================================
+      // 9. Trained Aliyan Portfolio AI Agent Engine
+      // =======================================================================
+      const aiTrigger = document.getElementById('ai-agent-trigger');
+      const aiWindow = document.getElementById('ai-chat-window');
+      const aiCloseBtn = document.getElementById('ai-chat-close-btn');
+      const aiBody = document.getElementById('ai-chat-body');
+      const aiForm = document.getElementById('ai-chat-form');
+      const aiInput = document.getElementById('ai-user-input');
+      const aiChips = document.querySelectorAll('.ai-chip');
+
+      const ALIYANA_KNOWLEDGE = {
+        name: "Aliyan",
+        title: "Frontend Developer & UI/UX Designer",
+        phone: "+92 314 3215619",
+        whatsapp: "https://wa.me/923143215619?text=Hi%20Aliyan%2C%20I%20chatted%20with%20your%20portfolio%20AI%20agent%20and%20want%20to%20collaborate!",
+        bio_en: "Aliyan is a Creative Frontend Developer and UI/UX Designer based in Pakistan. He bridges modern aesthetic Figma design with high-performance code, crafting award-winning web applications, 3D WebGL experiences, and scalable design systems.",
+        bio_ur: "Aliyan aik Creative Frontend Developer aur UI/UX Designer hain jo modern aesthetic designs (Figma) ko high-performance clean code (React, Next.js, 3D WebGL) mein transform kartay hain.",
+        skills: [
+          "Frontend Architecture: React.js, Next.js (App Router), JavaScript (ES6+), TypeScript, HTML5, CSS3/SCSS",
+          "UI/UX & Product Design: Figma, Wireframing, High-Fidelity Prototyping, Design Systems, Mobile-First UX, Micro-Interactions",
+          "3D & Motion UI: Three.js, WebGL shaders, Canvas 2D, GSAP animations, Responsive CSS Keyframes",
+          "Performance & Standards: 60 FPS Smoothness, Core Web Vitals optimization, Accessible WCAG AA standards, Cross-browser compatibility"
+        ],
+        projects: [
+          {
+            name: "humanOS",
+            tag: "UI/UX & Frontend System",
+            desc: "Futuristic productivity workspace interface featuring dark glassmorphism, customizable widgets, keyboard-first navigation, and micro-interactions."
+          },
+          {
+            name: "HushMeet",
+            tag: "Encrypted Communication SaaS",
+            desc: "Privacy-first WebRTC audio & video calling platform with live canvas waveform visualizers and low-latency UI controls."
+          },
+          {
+            name: "Aura 3D",
+            tag: "Interactive 3D WebGL Experience",
+            desc: "Interactive particle nebula built with Three.js shaders and dynamic mouse camera orbits running smoothly at 60 FPS."
+          }
+        ],
+        process: [
+          "1. Discovery & User Journey: Understanding product goals and user psychology.",
+          "2. Wireframing & Figma Prototypes: Designing sleek dark-mode design systems and components.",
+          "3. High-Performance Coding: Converting designs into pixel-perfect React / Next.js code.",
+          "4. Motion & Micro-Animations: Adding fluid shaders, canvas effects, and tactile feedback."
+        ]
+      };
+
+      let chatInitialized = false;
+
+      function openChat() {
+        if (!aiWindow) return;
+        aiWindow.classList.add('open');
+        aiWindow.setAttribute('aria-hidden', 'false');
+        if (!chatInitialized) {
+          showWelcomeMessage();
+          chatInitialized = true;
+        }
+        setTimeout(() => { if (aiInput) aiInput.focus(); }, 250);
+      }
+
+      function closeChat() {
+        if (!aiWindow) return;
+        aiWindow.classList.remove('open');
+        aiWindow.setAttribute('aria-hidden', 'true');
+      }
+
+      if (aiTrigger) aiTrigger.addEventListener('click', openChat);
+      if (aiCloseBtn) aiCloseBtn.addEventListener('click', closeChat);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && aiWindow && aiWindow.classList.contains('open')) {
+          closeChat();
+        }
+      });
+
+      function appendMessage(textOrHtml, sender = 'bot', hasCta = false) {
+        if (!aiBody) return;
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `ai-msg ${sender === 'user' ? 'ai-msg-user' : 'ai-msg-bot'}`;
+        msgDiv.innerHTML = textOrHtml;
+
+        if (hasCta && sender === 'bot') {
+          const cta = document.createElement('a');
+          cta.className = 'ai-cta-pill';
+          cta.href = ALIYANA_KNOWLEDGE.whatsapp;
+          cta.target = '_blank';
+          cta.rel = 'noopener noreferrer';
+          cta.innerHTML = `<span>Direct WhatsApp (${ALIYANA_KNOWLEDGE.phone})</span> 💬`;
+          msgDiv.appendChild(cta);
+        }
+
+        aiBody.appendChild(msgDiv);
+        aiBody.scrollTop = aiBody.scrollHeight;
+      }
+
+      function showWelcomeMessage() {
+        const welcome = `
+          <p><strong>Assalam-o-Alaikum! / Hello!</strong> 👋</p>
+          <p>Main <strong>Aliyan ka Dedicated AI Portfolio Agent</strong> hun. Main sirf Aliyan, unke technical skills, projects, UI/UX workflow, aur contact details ke baray mein trained hun.</p>
+          <p>Aap mujh se Urdu, Roman Urdu, ya English mein koi bhi sawal pooch saktay hain:</p>
+        `;
+        appendMessage(welcome, 'bot');
+      }
+
+      function showTypingIndicator() {
+        const typing = document.createElement('div');
+        typing.className = 'ai-typing-indicator';
+        typing.id = 'ai-typing-indicator';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        aiBody.appendChild(typing);
+        aiBody.scrollTop = aiBody.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const typing = document.getElementById('ai-typing-indicator');
+        if (typing) typing.remove();
+      }
+
+      function respondToUser(query) {
+        const q = query.toLowerCase().trim();
+        showTypingIndicator();
+
+        setTimeout(() => {
+          removeTypingIndicator();
+          let reply = "";
+          let showCta = false;
+
+          // 1. Who is Aliyan / Introduction
+          if (q.includes('who is') || q.includes('kaun hai') || q.includes('kon he') || q.includes('kon hai') || q.includes('about') || q.includes('intro') || q.includes('aliyan')) {
+            reply = `
+              <p><strong>Aliyan</strong> aik talented <strong>Frontend Developer &amp; UI/UX Designer</strong> hain.</p>
+              <p>Woh modern aesthetics, Figma design systems, React/Next.js architectures, aur immersive 3D/Canvas web experiences bananay mein mahir hain.</p>
+              <p>Unka mission digital products ko na sirf khubsurat banana hai balkay blazing fast aur intuitive banana hai.</p>
+            `;
+            showCta = true;
+          }
+          // 2. Skills & Tech Stack
+          else if (q.includes('skill') || q.includes('stack') || q.includes('tech') || q.includes('kia ata') || q.includes('kya ata') || q.includes('languages') || q.includes('react') || q.includes('figma')) {
+            reply = `
+              <p><strong>Aliyan ka Core Tech Stack &amp; Skills:</strong></p>
+              <ul>
+                <li><strong>Frontend:</strong> React.js, Next.js 14/15, TypeScript, JavaScript (ES6+), Modern HTML5/CSS3</li>
+                <li><strong>UI/UX Design:</strong> Figma Master, Interactive Prototyping, Wireframing, Design Tokens</li>
+                <li><strong>3D &amp; Motion UI:</strong> Three.js, WebGL shaders, Canvas 2D, GSAP animations, 60 FPS transitions</li>
+                <li><strong>Architecture:</strong> Clean Code, Component Reusability, Responsive &amp; Mobile-First</li>
+              </ul>
+            `;
+            showCta = true;
+          }
+          // 3. Projects
+          else if (q.includes('project') || q.includes('work') || q.includes('portfolio') || q.includes('kaam') || q.includes('case stud') || q.includes('experience')) {
+            reply = `
+              <p><strong>Aliyan ke Featured Projects:</strong></p>
+              <ul>
+                <li><strong>01 // humanOS:</strong> Futuristic glassmorphic productivity workspace with keyboard-first shortcuts and micro-interactions.</li>
+                <li><strong>02 // HushMeet:</strong> End-to-end encrypted voice/video SaaS interface featuring real-time audio waveforms.</li>
+                <li><strong>03 // Aura 3D:</strong> Interactive WebGL particle nebula with mouse orbit camera physics running at 60 FPS.</li>
+              </ul>
+              <p>Har project mein aesthetic design aur clean code ka perfect balance rakha gaya hai.</p>
+            `;
+            showCta = true;
+          }
+          // 4. UI/UX Process
+          else if (q.includes('process') || q.includes('ui/ux') || q.includes('design process') || q.includes('tareeqa') || q.includes('flow')) {
+            reply = `
+              <p><strong>Aliyan ka UI/UX Workflow:</strong></p>
+              <ul>
+                <li><strong>1. Discovery:</strong> Product goals aur user needs ko analyze karna.</li>
+                <li><strong>2. Wireframing &amp; Systems:</strong> Figma par sleek dark-mode layouts aur reusable design tokens tayar karna.</li>
+                <li><strong>3. Frontend Engineering:</strong> Figma design ko 100% pixel-perfect React / Next.js code mein badalna.</li>
+                <li><strong>4. Micro-Interactions:</strong> Smooth hover states, tactile clicks, aur 3D motion add karna.</li>
+              </ul>
+            `;
+          }
+          // 5. Hire / Contact / WhatsApp / Rate / Freelance
+          else if (q.includes('hire') || q.includes('contact') || q.includes('whatsapp') || q.includes('phone') || q.includes('number') || q.includes('call') || q.includes('raabta') || q.includes('price') || q.includes('freelance')) {
+            reply = `
+              <p>Aliyan new freelance projects, remote roles, aur UI/UX consulting ke liye available hain!</p>
+              <p>Aap seedha WhatsApp par baat kar saktay hain:</p>
+              <p>📞 <strong>Phone / WhatsApp:</strong> ${ALIYANA_KNOWLEDGE.phone}</p>
+            `;
+            showCta = true;
+          }
+          // 6. Greetings / Salaam
+          else if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('salam') || q.includes('kasa') || q.includes('kaisa')) {
+            reply = `
+              <p>Walaikum Assalam / Hello! 😊</p>
+              <p>Main theek hun, shukriya! Aap Aliyan ke kaam, skills, ya naye project ke baray mein kya janna chahein gay?</p>
+            `;
+          }
+          // Default fallback
+          else {
+            reply = `
+              <p>Main Aliyan ka portfolio assistant hun. Main sirf Aliyan aur unke kaam ke baray mein information provide kar sakta hun:</p>
+              <ul>
+                <li>Aliyan ki profile &amp; introduction</li>
+                <li>Technical skills (React, Next.js, Figma, 3D WebGL)</li>
+                <li>Featured projects (humanOS, HushMeet, Aura 3D)</li>
+                <li>Direct contact / WhatsApp: <strong>${ALIYANA_KNOWLEDGE.phone}</strong></li>
+              </ul>
+            `;
+            showCta = true;
+          }
+
+          appendMessage(reply, 'bot', showCta);
+        }, 350);
+      }
+
+      if (aiForm) {
+        aiForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const query = (aiInput ? aiInput.value : '').trim();
+          if (!query) return;
+
+          appendMessage(query, 'user');
+          if (aiInput) aiInput.value = '';
+          respondToUser(query);
+        });
+      }
+
+      aiChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const query = chip.getAttribute('data-query');
+          if (!query) return;
+          appendMessage(query, 'user');
+          respondToUser(query);
+        });
       });
 
     })();

@@ -54,7 +54,7 @@ Simply open `index.html` in any modern web browser (Google Chrome, Microsoft Edg
 
 ### Instant Free Deployment (Netlify Drop)
 1. Go to [https://app.netlify.com/drop](https://app.netlify.com/drop).
-2. Drag and drop this folder (`Aliyan's Digital Canvas _ Lovable_files`).
+2. Drag and drop this project folder (containing `index.html`, `style.css`, `main.js`, and images).
 3. Your site is live instantly with free SSL!
 
 ### GitHub Pages
